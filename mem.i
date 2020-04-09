@@ -1,0 +1,11 @@
+;memory definitions
+;memcpy adresses
+;dest can also be used for fill
+MEMCPY_SRC_LO   EQU $02
+MEMCPY_SRC      EQU $02
+MEMCPY_SRC_HI   EQU $03
+MEMCPY_DEST_LO  EQU $04
+MEMCPY_DEST     EQU $04
+MEMCPY_DEST_HI  EQU $05
+MEMCPY_QUANT_LO EQU $06
+MEMCPY_QUANT_HI EQU $07

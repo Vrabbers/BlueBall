@@ -1,0 +1,23 @@
+;register definitions
+;for different parts of the c64
+;added as needed
+
+;VIC-II Registers
+BGCOLOR0 EQU $D021
+;Colors
+BLACK  EQU $00
+WHITE  EQU $01
+RED    EQU $02
+CYAN   EQU $03
+PURPLE EQU $04
+GREEN  EQU $05
+BLUE   EQU $06
+YELLOW EQU $07
+ORANGE EQU $08
+BROWN  EQU $09
+LRED   EQU $0A
+DGRAY  EQU $0B
+GRAY   EQU $0C
+LGREEN EQU $0D
+LBLUE  EQU $0E
+LGRAY  EQU $0F
