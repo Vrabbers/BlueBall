@@ -11,7 +11,10 @@
 start:
 	LDA #$00
 	STA CURRENT_LEVEL
-
+	LDA #BLACK
+	STA BORDERCOLOR
+	LDA #BLUE
+	STA BGCOLOR0
 	LDA #<main_menu_scr
 	LDX #>main_menu_scr
 	STA MEMCPY_SRC_LO
@@ -42,10 +45,15 @@ start:
 	LDA #WHITE
 	JSR memfill
 
+mml:  
+	JSR SCNKEY
+	LDA $CB	
+	CMP #$40 ;no key pressed
+	BEQ mml ;no key pressed, try again
+
 	JSR level_setup
 
-l:  
-	JMP l
+gl: JMP gl
 
 	include "utils.asm"
 	include "data.asm"

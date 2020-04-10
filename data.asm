@@ -55,7 +55,8 @@ level1:
     .byte    $01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$02,$02,$02,$02,$02,$02,$02,$02,$01,$01,$01,$01,$04,$04,$04,$04,$04,$01,$01,$01,$01,$01,$01,$01
 level1_end:
 level_size EQU (level1_end - level1)
-
+SCREEN_LAST_ROW EQU (SCREEN_RAM + level_size)
+ROW_SIZE EQU (main_menu_size - level_size)
 
 level_table:
     .word level1
@@ -65,7 +66,7 @@ level_message_table:
 
 ;level messages
 level1_message:
-    .byte "TESTING OUT THINGS", $00
+    .byte $05, "    LEVEL 1 - BE CAREFUL WITH LAVA!", $00
 
 
 tile_property_table:

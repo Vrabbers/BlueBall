@@ -93,7 +93,7 @@ level_setup:
     STA LEVELSET_COLOR_LO
     STX LEVELSET_COLOR_HI ;set up screen registers
 
-.level_setup_loop: 
+level_setup_loop: 
     LDY #$00 ;make sure our Y isnt like poop
     LDA (MEMCPY_SRC),Y 
     TAX
@@ -114,7 +114,7 @@ level_setup:
     SBC #$00 ;subtract nothing, but apply the carry
     STA MEMCPY_QUANT_HI ;set it
     ORA MEMCPY_QUANT_LO ;we still have A with the high value, we OR it with the low
-    BEQ .levelsetup_end      ;if both are 0, return
+    BEQ level_string      ;if both are 0, return
     ;increase source and dest
     LDA MEMCPY_SRC_LO
     CLC ; clear carry flag
@@ -140,9 +140,42 @@ level_setup:
     ADC #$00 ;add nothing, but apply the carry
     STA LEVELSET_COLOR_HI ;set it
 
-    JMP .level_setup_loop
-.levelsetup_end:
+    JMP level_setup_loop
+
+level_string:
+    LDX #$00
+    LDA #$20
+level_string_clear_loop:
+    STA SCREEN_LAST_ROW,X
+    INX
+    CPX #ROW_SIZE
+    BNE level_string_clear_loop
+    ;text at the bottom
+    CLC
+    LDX #24
+    LDY #0
+    JSR PLOT ;cursor positiion
+    
+    LDA CURRENT_LEVEL
+    ASL  ;not american sign language, multiplies index by 2 because the level pointers are of course words
+    TAX ;not theft
+    LDA level_message_table,X;get the lo byte
+    STA MEMCPY_SRC_LO
+    INX ;もう一回
+    LDA level_message_table,X ;ハイバイト
+    STA MEMCPY_SRC_HI
+
+    LDY #$00
+level_string_loop:
+    LDA (MEMCPY_SRC),Y
+    BEQ level_setup_end ;if it is $00, end
+    JSR CHROUT
+    INY
+    JMP level_string_loop
+
+level_setup_end:
     RTS
+
 
 
     
