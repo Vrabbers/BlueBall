@@ -9,6 +9,10 @@
 	org $0810,0 ; fill with 0s otherwise basic goes like PIPIPIPIPIPI yeah
 	
 start:
+	SEI
+	LDA #$7F
+	STA $DC0D
+	STA $DD0D
 	LDA #$00
 	STA CURRENT_LEVEL
 	LDA #BLACK
@@ -53,7 +57,20 @@ mml:
 
 	JSR level_setup
 
-gl: JMP gl
+gl: 
+backchange:
+	LDA RASTER
+	CMP #$F2
+	BNE backchange
+	LDA #BLACK
+	STA BGCOLOR0
+backchangeblue:
+	LDA RASTER
+	CMP #$FF
+	BNE backchangeblue
+	LDA #BLUE
+	STA BGCOLOR0
+	JMP gl
 
 	include "utils.asm"
 	include "data.asm"
