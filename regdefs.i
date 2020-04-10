@@ -1,9 +1,10 @@
 ;register definitions
 ;for different parts of the c64
 ;added as needed
-
+SCREEN_RAM EQU $0400
 ;VIC-II Registers
 BGCOLOR0 EQU $D021
+COLOR_RAM EQU $D800
 ;Colors
 BLACK  EQU $00
 WHITE  EQU $01

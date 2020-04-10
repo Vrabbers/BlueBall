@@ -9,13 +9,16 @@
 	org $0810,0 ; fill with 0s otherwise basic goes like PIPIPIPIPIPI yeah
 	
 start:
+	LDA #$00
+	STA CURRENT_LEVEL
+
 	LDA #<main_menu_scr
 	LDX #>main_menu_scr
 	STA MEMCPY_SRC_LO
 	STX MEMCPY_SRC_HI
 
-	LDA #<$0400
-	LDX #>$0400
+	LDA #<SCREEN_RAM
+	LDX #>SCREEN_RAM
 	STA MEMCPY_DEST_LO
 	STX MEMCPY_DEST_HI
 
@@ -26,8 +29,8 @@ start:
 
 	JSR memcpy
 
-	LDA #<$D800
-	LDX #>$D800
+	LDA #<COLOR_RAM
+	LDX #>COLOR_RAM
 	STA MEMCPY_DEST_LO
 	STX MEMCPY_DEST_HI
 
@@ -36,8 +39,10 @@ start:
 	STA MEMCPY_QUANT_LO
 	STX MEMCPY_QUANT_HI
 
-	LDA #$01
+	LDA #WHITE
 	JSR memfill
+
+	JSR level_setup
 
 l:  
 	JMP l
