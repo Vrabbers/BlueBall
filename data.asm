@@ -78,7 +78,7 @@ tile_property_table:
 ;      |-> is water 
     .byte %00010000 ;tile 0, air
     .byte %01010001 ;tile 1, ground
-    .byte %00100011 ;tile 2, lava
+    .byte %10000011 ;tile 2, lava
     .byte %11000011 ;tile 3, spike
     .byte %00111001 ;tile 4, water
     .byte %10010100 ;tile 5, ladder left
@@ -98,70 +98,75 @@ tile_scrcode_table:
 
     ORG $3000
 ball_sprite:
-     .byte $00,$7E,$00
-     .byte $03,$FF,$C0
-     .byte $0F,$FF,$F0
-     .byte $1F,$FF,$F8
-     .byte $3F,$FF,$FC
-     .byte $3F,$FF,$FC
-     .byte $7F,$FF,$FE
-     .byte $7F,$FF,$FE
-     .byte $FF,$FF,$FF
-     .byte $FF,$FF,$FF
-     .byte $FF,$FF,$FF
-     .byte $FF,$FF,$FF
-     .byte $FF,$FF,$FF
-     .byte $7F,$FF,$FF
-     .byte $7F,$FF,$FE
-     .byte $3F,$FF,$FE
-     .byte $3F,$FF,$FC
-     .byte $1F,$FF,$F8
-     .byte $0F,$FF,$F0
-     .byte $03,$FF,$C0
-     .byte $00,$7E,$00
+BALL_SPRITE_PTR EQU $C0
+    .byte $00,$7E,$00
+    .byte $03,$FF,$C0
+    .byte $0F,$FF,$F0
+    .byte $1F,$FF,$F8
+    .byte $3F,$FF,$FC
+    .byte $3F,$FF,$FC
+    .byte $7F,$FF,$FE
+    .byte $7F,$FF,$FE
+    .byte $FF,$FF,$FF
+    .byte $FF,$FF,$FF
+    .byte $FF,$FF,$FF
+    .byte $FF,$FF,$FF
+    .byte $FF,$FF,$FF
+    .byte $7F,$FF,$FF
+    .byte $7F,$FF,$FE
+    .byte $3F,$FF,$FE
+    .byte $3F,$FF,$FC
+    .byte $1F,$FF,$F8
+    .byte $0F,$FF,$F0
+    .byte $03,$FF,$C0
+    .byte $00,$7E,$00
+    
+    .byte $00 ;buffer
+star_sprite: ;C1
+STAR_SPRITE_PTR EQU $C1
+    .byte $00,$18,$00
+    .byte $00,$18,$00
+    .byte $00,$3C,$00
+    .byte $00,$3C,$00
+    .byte $00,$7E,$00
+    .byte $00,$7E,$00
+    .byte $00,$FF,$00
+    .byte $00,$FF,$00
+    .byte $FF,$FF,$FF
+    .byte $7F,$FF,$FE
+    .byte $3F,$FF,$FC
+    .byte $0F,$FF,$F0
+    .byte $07,$FF,$E0
+    .byte $07,$FF,$E0
+    .byte $0F,$FF,$F0
+    .byte $0F,$FF,$F0
+    .byte $1F,$C3,$F8
+    .byte $1F,$00,$F8
+    .byte $3C,$00,$3C
+    .byte $30,$00,$0C
+    .byte $40,$00,$02
 
-star_sprite:
-     .byte $00,$18,$00
-     .byte $00,$18,$00
-     .byte $00,$3C,$00
-     .byte $00,$3C,$00
-     .byte $00,$7E,$00
-     .byte $00,$7E,$00
-     .byte $00,$FF,$00
-     .byte $00,$FF,$00
-     .byte $FF,$FF,$FF
-     .byte $7F,$FF,$FE
-     .byte $3F,$FF,$FC
-     .byte $0F,$FF,$F0
-     .byte $07,$FF,$E0
-     .byte $07,$FF,$E0
-     .byte $0F,$FF,$F0
-     .byte $0F,$FF,$F0
-     .byte $1F,$C3,$F8
-     .byte $1F,$00,$F8
-     .byte $3C,$00,$3C
-     .byte $30,$00,$0C
-     .byte $40,$00,$02
-
-surfboard_sprite:
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $00,$00,$00
-     .byte $3F,$FF,$FC
-     .byte $FF,$FF,$FE
-     .byte $FF,$FF,$FE
-     .byte $BF,$FF,$FC
+    .byte $00 ;buffer
+surfboard_sprite: ;C2
+SURFBOARD_SPRITE_PTR EQU $C2
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $00,$00,$00
+    .byte $3F,$FF,$FC
+    .byte $FF,$FF,$FE
+    .byte $FF,$FF,$FE
+    .byte $BF,$FF,$FC
