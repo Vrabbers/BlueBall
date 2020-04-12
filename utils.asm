@@ -3,7 +3,7 @@ memcpy:
     ;expects the stuff in the stuff
     ;destroys them tho :(
     LDY #$00
-    LDA (MEMCPY_SRC),Y 
+    LDA (MEMCPY_SRC),Y
     STA (MEMCPY_DEST),Y ;copy the data
     ;subtract 1 from quant
     LDA MEMCPY_QUANT_LO
@@ -172,7 +172,6 @@ level_string_loop:
     JSR CHROUT
     INY
     JMP level_string_loop
-
 level_setup_end:
     RTS
 

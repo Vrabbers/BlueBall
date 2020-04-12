@@ -79,6 +79,7 @@ mml:
 	LDA #$50
 	STA SPR0X
 	STA SPR0Y
+    
 game_loop: 
 backchange:
     LDA RASTER
