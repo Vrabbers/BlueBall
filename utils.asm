@@ -100,10 +100,6 @@ level_setup_loop:
     LDA tile_scrcode_table,X ;getscrcode for the level
     STA (MEMCPY_DEST),Y
     LDA tile_property_table,X;get color
-    LSR 
-    LSR 
-    LSR 
-    LSR  ;goodbye property data!
     STA (LEVELSET_COLOR),Y
 
     LDA MEMCPY_QUANT_LO

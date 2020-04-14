@@ -71,19 +71,19 @@ level1_message:
 
 tile_property_table:
 ;%XXXX XXXX
-; |__| ||||
-; color||||->is solid
-;      |||-> is harm
-;      ||-> is ladder
-;      |-> is water 
-    .byte %00010000 ;tile 0, air
-    .byte %01010001 ;tile 1, ground
-    .byte %10000011 ;tile 2, lava
-    .byte %11000011 ;tile 3, spike
-    .byte %00111001 ;tile 4, water
-    .byte %10010100 ;tile 5, ladder left
-    .byte %10010100 ;tile 6, ladder mid
-    .byte %10010100 ;tile 7, ladder right
+; |||| >>>>color
+; ||||->is solid
+; |||-> is harm
+; ||-> is ladder
+; |-> is water 
+    .byte %00000001 ;tile 0, air
+    .byte %00010101 ;tile 1, ground
+    .byte %00111000 ;tile 2, lava
+    .byte %00111100 ;tile 3, spike
+    .byte %10010011 ;tile 4, water
+    .byte %01001001 ; \
+    .byte %01001001 ;  | ladder pieces
+    .byte %01001001 ; /
 
 tile_scrcode_table:
 ;screencode corresponding to the tile

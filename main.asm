@@ -57,10 +57,6 @@ start:
 	STA SPRITE1PTR
 	LDA #YELLOW
 	STA SPR1C
-	LDA #$FF
-	STA SPR1X
-	LDA #$6F
-	STA SPR1Y ;star sprite
 
 	LDA #SURFBOARD_SPRITE_PTR
 	STA SPRITE2PTR
@@ -76,11 +72,69 @@ mml:
     JSR level_setup
 	LDA #255
 	STA SPRENABLE
-	LDA #$50
-	STA SPR0X
-	STA SPR0Y
-    
+    LDA #$30
+    STA SPR0Y
+    LDA #$01
+    STA PLAYER_X_POS_HI
 game_loop: 
+    LDA #WHITE
+    STA BORDERCOLOR
+
+    CLC
+    LDA #$03
+    ADC PLAYER_X_POS_LO
+    STA PLAYER_X_POS_LO
+    LDA #$00
+    ADC PLAYER_X_POS_HI
+    STA PLAYER_X_POS_HI
+    CLC
+    LDA #$07
+    ADC PLAYER_Y_POS_LO
+    STA PLAYER_Y_POS_LO
+    LDA #$00
+    ADC PLAYER_Y_POS_HI
+    STA PLAYER_Y_POS_HI
+    ;routine that converts player position into c64 sprite position
+    ;we will simply "floor" these values (chop off the fractional part)
+
+    LDA PLAYER_X_POS_LO
+    LSR
+    LSR 
+    LSR
+    LSR ;get rid of the subpixel bytes
+    STA $02
+    LDX #$00 ;we use this for writing the MSB
+    LDA PLAYER_X_POS_HI
+    ASL
+    ASL
+    ASL
+    ASL ;american sign language. funny joek
+    BCC msbsetdone
+    ;msb is set
+    INX ;make our X 1 (takes the same time as LDX #$01 and is 1 byte)
+msbsetdone:    
+    ORA $02
+    STA SPR0X
+    TXA ;GIB ME X
+    ORA XMSB
+    STA XMSB
+
+    LDA PLAYER_Y_POS_LO
+    LSR
+    LSR 
+    LSR
+    LSR ;get rid of the subpixel bytes
+    STA $02
+    LDA PLAYER_Y_POS_HI
+    ASL
+    ASL
+    ASL
+    ASL ;american sign language. funny joek
+    ORA $02
+    STA SPR0Y
+
+    LDA #BLACK
+    STA BORDERCOLOR
 backchange:
     LDA RASTER
     CMP #$F2

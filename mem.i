@@ -1,6 +1,7 @@
 ;memory definitions
 ;memcpy adresses
 ;dest can also be used for fill
+;or really any discardable use
 MEMCPY_SRC_LO   EQU $02
 MEMCPY_SRC      EQU $02
 MEMCPY_SRC_HI   EQU $03
@@ -13,5 +14,11 @@ CURRENT_LEVEL   EQU $08
 LEVELSET_COLOR_LO EQU $09
 LEVELSET_COLOR    EQU $09
 LEVELSET_COLOR_HI EQU $0A
-PLAYER_X_POS      EQU $0B
-PLAYER_Y_POS      EQU $0C
+
+;these all have 4 bits of subpixels 
+PLAYER_X_POS_LO   EQU $0B
+PLAYER_X_POS_HI   EQU $0C
+PLAYER_Y_POS_LO   EQU $0D
+PLAYER_Y_POS_HI   EQU $0E
+PLAYER_X_SPEED    EQU $0F
+PLAYER_Y_SPEED    EQU $10
