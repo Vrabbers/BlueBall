@@ -62,11 +62,13 @@ start:
 	STA SPRITE2PTR
 	LDA #RED
 	STA SPR2C ;surfboard
-
+    LDA #$05
+    STA PLAYER_X_POS_HI
+    STA PLAYER_Y_POS_HI
 mml:  
     JSR SCNKEY
-    LDA $CB    
-    CMP #$40 ;no key pressed
+    LDA SCNKEY_OUT    
+    CMP #NO_KEY
     BEQ mml ;no key pressed, try again
 
     JSR level_setup
@@ -80,20 +82,96 @@ game_loop:
     LDA #WHITE
     STA BORDERCOLOR
 
+    JSR SCNKEY
+    LDA SCNKEY_OUT
+    CMP #NO_KEY
+    BEQ noinput
+    CMP #W_KEY
+    BEQ w
+    CMP #A_KEY
+    BEQ a
+    CMP #S_KEY
+    BEQ s
+    CMP #D_KEY
+    BEQ d
+    BNE noinput
+w:
+    LDA #$F9
+    STA PLAYER_Y_SPEED
+    LDA #$00
+    STA PLAYER_X_SPEED
+    JMP doneinput
+a:
+    LDA #$F9
+    STA PLAYER_X_SPEED
+    LDA #$00
+    STA PLAYER_Y_SPEED
+    JMP doneinput
+s:
+    LDA #$07
+    STA PLAYER_Y_SPEED
+    LDA #$00
+    STA PLAYER_X_SPEED
+    JMP doneinput
+d:
+    LDA #$07
+    STA PLAYER_X_SPEED
+    LDA #$00
+    STA PLAYER_Y_SPEED
+    JMP doneinput
+noinput:
+    LDA #$00
+    STA PLAYER_X_SPEED
+    STA PLAYER_Y_SPEED
+doneinput:
+
+    LDA #%10000000
+    STA $02 ;we will need this for later
+    LDA PLAYER_X_SPEED
+    BIT $02 ;;ones compliment!!! stinky stinky but who cares
+    BNE xminus
+xplus:
     CLC
-    LDA #$03
     ADC PLAYER_X_POS_LO
     STA PLAYER_X_POS_LO
     LDA #$00
     ADC PLAYER_X_POS_HI
     STA PLAYER_X_POS_HI
+    JMP y
+xminus:
+    EOR #$FF
+    STA $03
+    SEC
+    LDA PLAYER_X_POS_LO
+    SBC $03
+    STA PLAYER_X_POS_LO
+    LDA PLAYER_X_POS_HI
+    SBC #$00
+    STA PLAYER_X_POS_HI
+y:
+    LDA PLAYER_Y_SPEED
+    BIT $02
+    BNE yminus
+yplus:
     CLC
-    LDA #$07
+    LDA PLAYER_Y_SPEED
     ADC PLAYER_Y_POS_LO
     STA PLAYER_Y_POS_LO
     LDA #$00
     ADC PLAYER_Y_POS_HI
     STA PLAYER_Y_POS_HI
+    JMP speedfinish
+yminus:
+    EOR #$FF
+    STA $03
+    SEC
+    LDA PLAYER_Y_POS_LO
+    SBC $03
+    STA PLAYER_Y_POS_LO
+    LDA PLAYER_Y_POS_HI
+    SBC #$00
+    STA PLAYER_Y_POS_HI
+speedfinish:
     ;routine that converts player position into c64 sprite position
     ;we will simply "floor" these values (chop off the fractional part)
 
@@ -132,9 +210,22 @@ msbsetdone:
     ASL ;american sign language. funny joek
     ORA $02
     STA SPR0Y
-
     LDA #BLACK
     STA BORDERCOLOR
+    LDA PLAYER_X_POS_HI
+    STA SCREEN_RAM
+    LDA PLAYER_X_POS_LO
+    STA SCREEN_RAM + 1
+    LDA PLAYER_X_SPEED 
+    STA SCREEN_RAM + 3
+    LDA PLAYER_Y_POS_HI
+    STA SCREEN_RAM + 40
+    LDA PLAYER_Y_POS_LO
+    STA SCREEN_RAM + 41
+    LDA PLAYER_Y_SPEED 
+    STA SCREEN_RAM + 43
+    LDA SCNKEY_OUT
+    STA SCREEN_RAM + 80
 backchange:
     LDA RASTER
     CMP #$F2
@@ -149,6 +240,6 @@ backchangeblue:
     LDA #BLUE 
     STA BGCOLOR0 ;go back, and start the game loop again
     JMP game_loop
-
+    
     INCLUDE "utils.asm"
     INCLUDE "data.asm" ;include the files
