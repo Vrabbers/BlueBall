@@ -171,6 +171,31 @@ level_string_loop:
 level_setup_end:
     RTS
 
+print_byte:
+    ;based on the PRBYTE of the woz monitor because that code is a lot better
+    ;a - byte
+    ;b - where in screen
+    PHA
+    LSR 
+    LSR 
+    LSR 
+    LSR
+    JSR print_hex
+    PLA
+;falls through
+print_hex:
+    AND #$0F ;mask LSD
+    CMP #$0A ;is it a decimal character?
+    BCC outd ;yes! treat it like a decimal
+    ;no, fall through
+outl:
+    SBC #9
+    STA SCREEN_RAM,X
+    INX
+    RTS
+outd:
+    ADC #$30 ;scrcode for 0
+    STA SCREEN_RAM,X
+    INX
+    RTS
 
-
-    

@@ -1,5 +1,5 @@
     PROCESSOR 6502
-
+DEBUG EQU $01 ;00 for no debooge
     INCLUDE "regdefs.i"
     INCLUDE "mem.i"
     ORG    $0801 ;dec 2049
@@ -79,9 +79,11 @@ mml:
     LDA #$01
     STA PLAYER_X_POS_HI
 game_loop: 
-    LDA #WHITE
-    STA BORDERCOLOR
-
+    IF DEBUG
+        LDA #BLUE
+        STA BORDERCOLOR
+    EIF
+    
     JSR SCNKEY
     LDA SCNKEY_OUT
     CMP #NO_KEY
@@ -100,36 +102,36 @@ w:
     STA PLAYER_Y_SPEED
     LDA #$00
     STA PLAYER_X_SPEED
-    JMP doneinput
+    BEQ doneinput
 a:
     LDA #$F9
     STA PLAYER_X_SPEED
     LDA #$00
     STA PLAYER_Y_SPEED
-    JMP doneinput
+    BEQ doneinput
 s:
     LDA #$07
     STA PLAYER_Y_SPEED
     LDA #$00
     STA PLAYER_X_SPEED
-    JMP doneinput
+    BEQ doneinput
 d:
     LDA #$07
     STA PLAYER_X_SPEED
     LDA #$00
     STA PLAYER_Y_SPEED
-    JMP doneinput
+    BEQ doneinput
 noinput:
     LDA #$00
     STA PLAYER_X_SPEED
     STA PLAYER_Y_SPEED
 doneinput:
-
-    LDA #%10000000
-    STA $02 ;we will need this for later
+    IF DEBUG
+        LDA #YELLOW
+        STA BORDERCOLOR
+    EIF
     LDA PLAYER_X_SPEED
-    BIT $02 ;;ones compliment!!! stinky stinky but who cares
-    BNE xminus
+    BMI xminus
 xplus:
     CLC
     ADC PLAYER_X_POS_LO
@@ -150,8 +152,7 @@ xminus:
     STA PLAYER_X_POS_HI
 y:
     LDA PLAYER_Y_SPEED
-    BIT $02
-    BNE yminus
+    BMI yminus
 yplus:
     CLC
     LDA PLAYER_Y_SPEED
@@ -174,29 +175,35 @@ yminus:
 speedfinish:
     ;routine that converts player position into c64 sprite position
     ;we will simply "floor" these values (chop off the fractional part)
-
+    IF DEBUG
+        LDA #GREEN
+        STA BORDERCOLOR
+    EIF
     LDA PLAYER_X_POS_LO
     LSR
     LSR 
     LSR
     LSR ;get rid of the subpixel bytes
     STA $02
-    LDX #$00 ;we use this for writing the MSB
     LDA PLAYER_X_POS_HI
     ASL
     ASL
     ASL
     ASL ;american sign language. funny joek
-    BCC msbsetdone
-    ;msb is set
-    INX ;make our X 1 (takes the same time as LDX #$01 and is 1 byte)
-msbsetdone:    
     ORA $02
     STA SPR0X
-    TXA ;GIB ME X
+    BCS msbset
+msbclear:
+    LDA #$FE
+    AND XMSB
+    STA XMSB
+    BCC msbdone
+msbset: 
+    LDA #$01
     ORA XMSB
     STA XMSB
 
+msbdone:
     LDA PLAYER_Y_POS_LO
     LSR
     LSR 
@@ -210,22 +217,29 @@ msbsetdone:
     ASL ;american sign language. funny joek
     ORA $02
     STA SPR0Y
-    LDA #BLACK
-    STA BORDERCOLOR
-    LDA PLAYER_X_POS_HI
-    STA SCREEN_RAM
-    LDA PLAYER_X_POS_LO
-    STA SCREEN_RAM + 1
-    LDA PLAYER_X_SPEED 
-    STA SCREEN_RAM + 3
-    LDA PLAYER_Y_POS_HI
-    STA SCREEN_RAM + 40
-    LDA PLAYER_Y_POS_LO
-    STA SCREEN_RAM + 41
-    LDA PLAYER_Y_SPEED 
-    STA SCREEN_RAM + 43
-    LDA SCNKEY_OUT
-    STA SCREEN_RAM + 80
+
+    IF DEBUG
+        LDA #RED
+        STA BORDERCOLOR
+        LDX #0
+        LDA PLAYER_X_POS_HI
+        JSR print_byte
+        LDA PLAYER_X_POS_LO
+        JSR print_byte
+        INX
+        LDA PLAYER_X_SPEED
+        JSR print_byte
+        LDX #40
+        LDA PLAYER_Y_POS_HI
+        JSR print_byte
+        LDA PLAYER_Y_POS_LO
+        JSR print_byte
+        INX
+        LDA PLAYER_Y_SPEED
+        JSR print_byte
+        LDA #BLACK
+        STA BORDERCOLOR
+    EIF
 backchange:
     LDA RASTER
     CMP #$F2
@@ -241,5 +255,6 @@ backchangeblue:
     STA BGCOLOR0 ;go back, and start the game loop again
     JMP game_loop
     
-    INCLUDE "utils.asm"
     INCLUDE "data.asm" ;include the files
+    INCLUDE "utils.asm"
+

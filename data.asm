@@ -96,9 +96,9 @@ tile_scrcode_table:
     .byte $43 ;tile 6, ladder mid (─)
     .byte $73 ;tile 7, ladder right (┤)
 
-    ORG $3000
+    ORG $2000
 ball_sprite:
-BALL_SPRITE_PTR EQU $C0
+BALL_SPRITE_PTR EQU $80
     .byte $00,$7E,$00
     .byte $03,$FF,$C0
     .byte $0F,$FF,$F0
@@ -123,7 +123,7 @@ BALL_SPRITE_PTR EQU $C0
     
     .byte $00 ;buffer
 star_sprite: ;C1
-STAR_SPRITE_PTR EQU $C1
+STAR_SPRITE_PTR EQU $81
     .byte $00,$18,$00
     .byte $00,$18,$00
     .byte $00,$3C,$00
@@ -148,7 +148,7 @@ STAR_SPRITE_PTR EQU $C1
 
     .byte $00 ;buffer
 surfboard_sprite: ;C2
-SURFBOARD_SPRITE_PTR EQU $C2
+SURFBOARD_SPRITE_PTR EQU $82
     .byte $00,$00,$00
     .byte $00,$00,$00
     .byte $00,$00,$00
