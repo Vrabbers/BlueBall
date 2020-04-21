@@ -171,6 +171,15 @@ level_string_loop:
 level_setup_end:
     RTS
 
+print_byte_with_sign:
+    AND #$FF ;check bit 7
+    BPL print_byte
+    TAY
+    LDA #$2D
+    STA SCREEN_RAM,X
+    TYA
+    EOR #$FF
+    INX
 print_byte:
     ;based on the PRBYTE of the woz monitor because that code is a lot better
     ;a - byte
@@ -192,10 +201,14 @@ outl:
     SBC #9
     STA SCREEN_RAM,X
     INX
+    LDA #$20
+    STA SCREEN_RAM,X
     RTS
 outd:
     ADC #$30 ;scrcode for 0
     STA SCREEN_RAM,X
     INX
+    LDA #$20
+    STA SCREEN_RAM,X
     RTS
 

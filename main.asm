@@ -98,48 +98,44 @@ game_loop:
     BEQ d
     BNE noinput
 w:
-    LDA #$F9
-    STA PLAYER_Y_SPEED
-    LDA #$00
+d:  
+    LDA #$20
     STA PLAYER_X_SPEED
-    BEQ doneinput
-a:
-    LDA #$F9
+    BNE doneinput
+s: 
+
+a:  
+    LDA #$DF
     STA PLAYER_X_SPEED
-    LDA #$00
-    STA PLAYER_Y_SPEED
-    BEQ doneinput
-s:
-    LDA #$07
-    STA PLAYER_Y_SPEED
-    LDA #$00
-    STA PLAYER_X_SPEED
-    BEQ doneinput
-d:
-    LDA #$07
-    STA PLAYER_X_SPEED
-    LDA #$00
-    STA PLAYER_Y_SPEED
-    BEQ doneinput
+    BNE doneinput
+
 noinput:
-    LDA #$00
+    LDA #$0
     STA PLAYER_X_SPEED
-    STA PLAYER_Y_SPEED
+
 doneinput:
     IF DEBUG
         LDA #YELLOW
         STA BORDERCOLOR
     EIF
+    LDA PLAYER_Y_SPEED
+    ADC #$02
+    CMP #$70
+    BMI .c
+    LDA #$70
+.c: STA PLAYER_Y_SPEED
     LDA PLAYER_X_SPEED
-    BMI xminus
+        BMI xminus
+
 xplus:
     CLC
     ADC PLAYER_X_POS_LO
     STA PLAYER_X_POS_LO
     LDA #$00
     ADC PLAYER_X_POS_HI
+    AND #$1F ;;mask some bits
     STA PLAYER_X_POS_HI
-    JMP y
+    BPL y
 xminus:
     EOR #$FF
     STA $03
@@ -149,6 +145,7 @@ xminus:
     STA PLAYER_X_POS_LO
     LDA PLAYER_X_POS_HI
     SBC #$00
+    AND #$1F ;;mask them
     STA PLAYER_X_POS_HI
 y:
     LDA PLAYER_Y_SPEED
@@ -160,8 +157,9 @@ yplus:
     STA PLAYER_Y_POS_LO
     LDA #$00
     ADC PLAYER_Y_POS_HI
+    AND #$0F ;mask bits
     STA PLAYER_Y_POS_HI
-    JMP speedfinish
+    BPL speedfinish
 yminus:
     EOR #$FF
     STA $03
@@ -171,8 +169,27 @@ yminus:
     STA PLAYER_Y_POS_LO
     LDA PLAYER_Y_POS_HI
     SBC #$00
+    AND #$0F ;mask bits
     STA PLAYER_Y_POS_HI
 speedfinish:
+    IF DEBUG
+        LDA #BROWN
+        STA BORDERCOLOR
+    EIF
+
+    ;collision routine
+    LDA PLAYER_X_SPEED
+    AND #$FF
+    BMI colxm
+    ;x is positive
+    CLC
+    LDA #$18 * 2 ;visible area start
+    ADC PLAYER_X_POS_LO
+    STA $02
+    LDA #$00
+    ADC PLAYER_X_POS_HI
+    AND #$1F ;;mask some bits
+    STA $02
     ;routine that converts player position into c64 sprite position
     ;we will simply "floor" these values (chop off the fractional part)
     IF DEBUG
@@ -228,7 +245,7 @@ msbdone:
         JSR print_byte
         INX
         LDA PLAYER_X_SPEED
-        JSR print_byte
+        JSR print_byte_with_sign
         LDX #40
         LDA PLAYER_Y_POS_HI
         JSR print_byte
@@ -236,7 +253,7 @@ msbdone:
         JSR print_byte
         INX
         LDA PLAYER_Y_SPEED
-        JSR print_byte
+        JSR print_byte_with_sign
         LDA #BLACK
         STA BORDERCOLOR
     EIF
@@ -249,7 +266,7 @@ backchange:
 
 backchangeblue:
     LDA RASTER
-    CMP #$FF
+    CMP #$FA
     BNE backchangeblue
     LDA #BLUE 
     STA BGCOLOR0 ;go back, and start the game loop again
