@@ -1,3 +1,6 @@
+
+
+
     BRK ; if you're still running code here something has gone terribly wrong
 main_menu_scr:
     .byte $70,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$6E
@@ -98,7 +101,7 @@ tile_scrcode_table:
 
     ORG $2000
 ball_sprite:
-BALL_SPRITE_PTR EQU $80
+BALL_SPRITE_PTR EQU ./64
     .byte $00,$7E,$00
     .byte $03,$FF,$C0
     .byte $0F,$FF,$F0
@@ -123,7 +126,7 @@ BALL_SPRITE_PTR EQU $80
     
     .byte $00 ;buffer
 star_sprite: ;C1
-STAR_SPRITE_PTR EQU $81
+STAR_SPRITE_PTR EQU ./64
     .byte $00,$18,$00
     .byte $00,$18,$00
     .byte $00,$3C,$00
@@ -148,7 +151,7 @@ STAR_SPRITE_PTR EQU $81
 
     .byte $00 ;buffer
 surfboard_sprite: ;C2
-SURFBOARD_SPRITE_PTR EQU $82
+SURFBOARD_SPRITE_PTR EQU ./64
     .byte $00,$00,$00
     .byte $00,$00,$00
     .byte $00,$00,$00
