@@ -15,6 +15,11 @@ start: LIST ON
     STA $DC0D
     STA $DD0D ;disable system interrupts
 	
+    LDA #<restore_key
+    LDX #>restore_key
+    STA NMIVECTOR_LO
+    STX NMIVECTOR_HI
+
     LDA #$00 
     STA CURRENT_LEVEL ;start at level 1
 
@@ -77,3 +82,6 @@ mml:
     INCLUDE "data.asm" ;include the files
     INCLUDE "game.asm"
 
+restore_key:
+    ;this is ran when the restore key is pressed. perhaps ill make it show some debug info later
+    JMP start;
