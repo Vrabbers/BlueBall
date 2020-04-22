@@ -13,7 +13,70 @@ game_loop:
         LDA #BLUE
         STA BORDERCOLOR
     EIF
-    
+    JSR input
+    IF DEBUG
+        LDA #YELLOW
+        STA BORDERCOLOR
+    EIF
+    LDA PLAYER_Y_SPEED
+    ADC #$02
+    CMP #$70
+    BMI .c
+    LDA #$70
+.c: STA PLAYER_Y_SPEED
+    JSR speed
+    IF DEBUG = $02
+        LDA #RED
+        STA BORDERCOLOR
+        LDX #0
+        LDA PLAYER_X_POS_HI
+        JSR print_byte
+        LDA PLAYER_X_POS_LO
+        JSR print_byte
+        INX
+        LDA PLAYER_X_SPEED
+        JSR print_byte_with_sign
+        LDX #40
+        LDA PLAYER_Y_POS_HI
+        JSR print_byte
+        LDA PLAYER_Y_POS_LO
+        JSR print_byte
+        INX
+        LDA PLAYER_Y_SPEED
+        JSR print_byte_with_sign
+    EIF
+    IF DEBUG
+        LDA #BLACK
+        STA BORDERCOLOR
+    EIF
+backchange:
+    LDA RASTER
+    CMP #$F2
+    BNE backchange
+    LDA #BLACK
+    STA BGCOLOR0 ;at this point, we're on the line just above the text, so we make the background color black
+
+backchangeblue:
+    LDA RASTER
+    CMP #$FA
+    BNE backchangeblue
+    IF DEBUG
+        LDA #WHITE
+        STA BORDERCOLOR
+    EIF
+    JSR vblank
+    LDA #BLUE 
+    STA BGCOLOR0 ;go back, and start the game loop again
+    JMP game_loop
+end:
+    RTS
+
+
+;;============================================
+;;subroutines
+;;============================================
+
+input:  
     JSR SCNKEY
     LDA SCNKEY_OUT
     CMP #NO_KEY
@@ -33,30 +96,21 @@ d:
     STA PLAYER_X_SPEED
     BNE doneinput
 s: 
-
 a:  
     LDA #$DF
     STA PLAYER_X_SPEED
     BNE doneinput
-
 noinput:
     LDA #$0
     STA PLAYER_X_SPEED
-
 doneinput:
-    IF DEBUG
-        LDA #YELLOW
-        STA BORDERCOLOR
-    EIF
-    LDA PLAYER_Y_SPEED
-    ADC #$02
-    CMP #$70
-    BMI .c
-    LDA #$70
-.c: STA PLAYER_Y_SPEED
-    LDA PLAYER_X_SPEED
-        BMI xminus
+    RTS
 
+
+
+speed:
+    LDA PLAYER_X_SPEED
+    BMI xminus
 xplus:
     CLC
     ADC PLAYER_X_POS_LO
@@ -102,16 +156,13 @@ yminus:
     AND #$0F ;mask bits
     STA PLAYER_Y_POS_HI
 speedfinish:
-    IF DEBUG
-        LDA #BROWN
-        STA BORDERCOLOR
-    EIF
+    RTS
+
+
+
+vblank:
     ;routine that converts player position into c64 sprite position
     ;we will simply "floor" these values (chop off the fractional part)
-    IF DEBUG
-        LDA #GREEN
-        STA BORDERCOLOR
-    EIF
     LDA PLAYER_X_POS_LO
     LSR
     LSR 
@@ -135,7 +186,6 @@ msbset:
     LDA #$01
     ORA XMSB
     STA XMSB
-
 msbdone:
     LDA PLAYER_Y_POS_LO
     LSR
@@ -150,42 +200,4 @@ msbdone:
     ASL ;american sign language. funny joek
     ORA $02
     STA SPR0Y
-
-    IF DEBUG
-        LDA #RED
-        STA BORDERCOLOR
-        LDX #0
-        LDA PLAYER_X_POS_HI
-        JSR print_byte
-        LDA PLAYER_X_POS_LO
-        JSR print_byte
-        INX
-        LDA PLAYER_X_SPEED
-        JSR print_byte_with_sign
-        LDX #40
-        LDA PLAYER_Y_POS_HI
-        JSR print_byte
-        LDA PLAYER_Y_POS_LO
-        JSR print_byte
-        INX
-        LDA PLAYER_Y_SPEED
-        JSR print_byte_with_sign
-        LDA #BLACK
-        STA BORDERCOLOR
-    EIF
-backchange:
-    LDA RASTER
-    CMP #$F2
-    BNE backchange
-    LDA #BLACK
-    STA BGCOLOR0 ;at this point, we're on the line just above the text, so we make the background color black
-
-backchangeblue:
-    LDA RASTER
-    CMP #$FA
-    BNE backchangeblue
-    LDA #BLUE 
-    STA BGCOLOR0 ;go back, and start the game loop again
-    JMP game_loop
-end:
     RTS

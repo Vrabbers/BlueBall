@@ -1,5 +1,5 @@
     PROCESSOR 6502
-DEBUG EQU $01 ;00 for no debooge
+DEBUG EQU $01 ;00 for no debooge ;1 for "profiling" ;2 for also values
     INCLUDE "regdefs.i"
     INCLUDE "mem.i"
     ORG    $0801 ;dec 2049
@@ -72,7 +72,7 @@ mml:
     BEQ mml ;no key pressed, try again
     
     JSR game
-    
+
     INCLUDE "utils.asm"
     INCLUDE "data.asm" ;include the files
     INCLUDE "game.asm"
