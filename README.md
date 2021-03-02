@@ -1,0 +1,2 @@
+The base code for this was based roughly on [gb-boilerplate](https://github.com/ISSOtm/gb-boilerplate) with some bits of
+[gb-starter-kit](https://github.com/ISSOtm/gb-starter-kit/blob/master/src/vectors.asm) added on.
